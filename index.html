@@ -407,7 +407,7 @@ let currentMode='app';
 let prices={};
 let extraRows=[];
 let historial=JSON.parse(localStorage.getItem('ks_historial')||'[]');
-let config=JSON.parse(localStorage.getItem('ks_config')||'{}');
+let config=JSON.parse(localStorage.getItem('ks_config')||'{"webAppUrl":"https://script.google.com/macros/s/AKfycbxE3uMExmpW3z4GJKUnaxwPEQrj6NEKReKd_OzRjGT9cEZ6Kj_Kk7RWW94idY6LHYKK/exec"}');
 let allData=JSON.parse(localStorage.getItem('ks_data')||'[]');
 let perfil=JSON.parse(localStorage.getItem('ks_perfil')||'null');
 let lastSession=JSON.parse(localStorage.getItem('ks_last_session')||'null');
@@ -419,7 +419,7 @@ function init(){
     setTimeout(()=>{document.getElementById('onboardOverlay').style.display='none';},400);
     aplicarPerfil();
   }
-  if(config.webAppUrl) document.getElementById('configWebAppUrl').value=config.webAppUrl;
+  document.getElementById('configWebAppUrl').value=config.webAppUrl||'';
 }
 
 function guardarOnboard(){
