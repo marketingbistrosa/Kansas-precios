@@ -21,6 +21,7 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;font-size:15px;}
 
+/* ONBOARDING */
 .onboard-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:var(--red);z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;transition:opacity 0.4s ease;}
 .onboard-overlay.hidden{opacity:0;pointer-events:none;}
 .onboard-logo{font-size:32px;font-weight:600;color:white;letter-spacing:-1px;margin-bottom:4px;}
@@ -38,61 +39,97 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);min
 .select-arrow{position:relative;}
 .select-arrow::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:12px;}
 
+/* HEADER */
 .header{background:var(--red);color:white;padding:12px 16px 10px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;}
 .header-left{display:flex;flex-direction:column;}
 .header-logo{font-size:18px;font-weight:600;letter-spacing:-0.5px;}
 .header-logo span{color:var(--yellow);}
 .header-user{font-size:11px;color:rgba(255,255,255,0.75);margin-top:1px;}
 .header-mode{font-size:12px;background:rgba(255,255,255,0.2);padding:5px 12px;border-radius:20px;cursor:pointer;border:none;color:white;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.edit-btn{background:rgba(255,255,255,0.2);border:none;border-radius:20px;padding:5px 10px;color:white;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
+/* NAV */
 .nav-tabs{display:flex;background:white;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;}
 .nav-tabs::-webkit-scrollbar{display:none;}
 .nav-tab{flex:1;min-width:80px;padding:11px 8px;text-align:center;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;user-select:none;}
 .nav-tab.active{color:var(--red);border-bottom-color:var(--red);}
 
+/* PAGES */
 .page{display:none;padding:14px;}
 .page.active{display:block;}
 
+/* CARDS */
 .card{background:white;border-radius:var(--radius);border:1px solid var(--border);padding:14px;margin-bottom:10px;}
 .card-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);margin-bottom:12px;}
 
-select,input[type="number"],input[type="text"]{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--dark);background:white;appearance:none;-webkit-appearance:none;outline:none;transition:border-color 0.2s;}
+/* INPUTS */
+select,input[type="number"],input[type="text"],input[type="date"]{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:15px;color:var(--dark);background:white;appearance:none;-webkit-appearance:none;outline:none;transition:border-color 0.2s;}
 select:focus,input:focus{border-color:var(--red);}
 .select-wrap{position:relative;margin-bottom:10px;}
 .select-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:12px;}
 .select-wrap select{padding-right:36px;}
 
+/* DATE SELECTOR */
+.date-row{display:flex;gap:8px;align-items:center;margin-bottom:10px;}
+.date-row label{font-size:12px;font-weight:500;color:var(--mid);white-space:nowrap;}
+.date-row input[type="date"]{flex:1;font-size:14px;padding:9px 12px;}
+
 /* SEARCH */
-.search-wrap{position:relative;margin-bottom:12px;}
+.search-wrap{position:relative;margin-bottom:10px;}
 .search-wrap input{padding-left:36px;background:var(--bg);border-color:var(--border);}
 .search-wrap::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;}
-.search-count{font-size:11px;color:var(--muted);text-align:right;margin-top:-8px;margin-bottom:8px;}
+.search-count{font-size:11px;color:var(--muted);text-align:right;margin-top:-6px;margin-bottom:8px;}
 
-/* QUICK MODE BANNER */
+/* QUICK BANNER */
 .quick-banner{background:var(--yellow-light);border:1px solid #FFD54F;border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
 .quick-banner-text{flex:1;font-size:13px;color:#5D4037;line-height:1.4;}
 .quick-banner-text strong{display:block;font-weight:600;font-size:13px;}
 .quick-clear{font-size:12px;color:var(--offer);cursor:pointer;text-decoration:underline;white-space:nowrap;}
 
+/* NEW SESSION MODAL */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:150;display:flex;align-items:center;justify-content:center;padding:24px;}
+.modal-overlay.hidden{display:none;}
+.modal-card{background:white;border-radius:16px;padding:24px 20px;width:100%;max-width:320px;}
+.modal-card h3{font-size:16px;font-weight:600;margin-bottom:8px;}
+.modal-card p{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.modal-btns{display:flex;flex-direction:column;gap:8px;}
+.modal-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:none;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;text-align:center;}
+.modal-btn-primary{background:var(--red);color:white;}
+.modal-btn-secondary{background:white;color:var(--red);border:1px solid var(--red);}
+.modal-btn-ghost{background:white;color:var(--muted);border:1px solid var(--border);}
+
 /* PRICE ROWS */
-.price-row{padding:12px 0;border-bottom:1px solid var(--border);}
+.price-row{border-bottom:1px solid var(--border);transition:all 0.2s;}
 .price-row:last-child{border-bottom:none;}
-.price-row.hidden-row{display:none;}
-.price-row-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+
+/* COLLAPSED STATE */
+.price-row-collapsed{display:flex;align-items:center;padding:10px 0;gap:10px;cursor:pointer;}
+.price-row-collapsed .brand-name{flex:1;font-size:13px;font-weight:500;color:var(--dark);}
+.price-row-collapsed .brand-name small{display:block;font-size:11px;color:var(--muted);font-weight:400;}
+.price-row-collapsed .collapse-status{font-size:12px;font-weight:500;}
+.collapse-status.ok{color:var(--success);}
+.collapse-status.offer{color:var(--offer);}
+.collapse-status.absent{color:var(--absent);}
+.collapse-status.nostock{color:var(--nostock);}
+.collapse-chevron{color:var(--muted);font-size:12px;}
+
+/* EXPANDED STATE */
+.price-row-expanded{padding:12px 0;}
+.price-row-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
 .price-brand{flex:1;font-size:14px;font-weight:500;line-height:1.3;}
 .price-brand small{display:block;font-weight:400;font-size:12px;color:var(--muted);}
 .kansas-badge{background:var(--red);color:white;font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;flex-shrink:0;}
 
 /* STATUS BUTTONS */
-.status-btns{display:flex;gap:5px;margin-bottom:8px;}
-.status-btn{flex:1;padding:7px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:white;font-size:11px;font-weight:500;color:var(--mid);cursor:pointer;text-align:center;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
+.status-btns{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.status-btn{flex:1;min-width:70px;padding:7px 4px;border-radius:var(--radius-sm);border:1px solid var(--border);background:white;font-size:11px;font-weight:500;color:var(--mid);cursor:pointer;text-align:center;transition:all 0.15s;font-family:'DM Sans',sans-serif;}
 .status-btn.active-precio{background:#E8F5EE;border-color:#1A8A4A;color:#1A8A4A;}
 .status-btn.active-oferta{background:var(--offer-light);border-color:var(--offer);color:var(--offer);}
 .status-btn.active-absent{background:var(--absent-light);border-color:var(--absent);color:var(--absent);}
 .status-btn.active-nostock{background:var(--nostock-light);border-color:var(--nostock);color:var(--nostock);}
 
 /* PRICE INPUTS */
-.price-inputs{display:flex;gap:8px;align-items:flex-start;}
+.price-inputs{display:flex;gap:8px;align-items:flex-start;margin-bottom:8px;}
 .price-field{flex:1;}
 .price-field label{display:block;font-size:10px;font-weight:500;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px;}
 .price-input-wrap{position:relative;}
@@ -101,30 +138,30 @@ select:focus,input:focus{border-color:var(--red);}
 .price-input-wrap.offer input{border-color:var(--offer);background:var(--offer-light);color:var(--offer);}
 .pct-badge{font-size:11px;font-weight:600;color:var(--offer);background:var(--offer-light);border:1px solid #FFCC80;padding:3px 7px;border-radius:20px;white-space:nowrap;align-self:flex-end;margin-bottom:2px;min-width:44px;text-align:center;}
 
-/* DINAMICA CHIPS */
-.chips-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;margin-top:8px;}
-.chips{display:flex;flex-wrap:wrap;gap:5px;}
+/* CHIPS */
+.chips-label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:4px;}
 .chip{font-size:11px;padding:5px 10px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:white;color:var(--mid);transition:all 0.15s;user-select:none;font-family:'DM Sans',sans-serif;}
 .chip.selected{background:var(--red);color:white;border-color:var(--red);}
 
-/* ABSENT / NOSTOCK STATES */
-.absent-row{background:var(--absent-light);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--absent);font-weight:500;}
-.nostock-row{background:var(--nostock-light);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--nostock);font-weight:500;}
+/* STATE MESSAGES */
+.absent-row{background:var(--absent-light);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--absent);font-weight:500;margin-bottom:4px;}
+.nostock-row{background:var(--nostock-light);border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:var(--nostock);font-weight:500;margin-bottom:4px;}
 
-/* EXTRA COMPETITORS */
+/* EXTRA COMPETITORS — mejorado */
 .extra-section{margin-top:16px;padding-top:14px;border-top:2px dashed var(--border);}
 .extra-title{font-size:12px;font-weight:600;color:var(--mid);margin-bottom:10px;}
-.extra-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
-.extra-row input[type="text"]{flex:1.5;font-size:13px;}
-.extra-row input[type="number"]{flex:1;font-size:13px;font-family:'DM Mono',monospace;}
-.extra-remove{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
+.extra-item{background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);padding:12px;margin-bottom:8px;}
+.extra-item-header{display:flex;gap:8px;margin-bottom:10px;align-items:flex-start;}
+.extra-input-label{font-size:10px;font-weight:500;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px;}
+.extra-remove{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0;line-height:1;margin-top:18px;flex-shrink:0;}
 .btn-add-extra{width:100%;padding:9px;border-radius:var(--radius-sm);border:1px dashed var(--border);background:white;color:var(--mid);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;}
 .btn-add-extra:hover{border-color:var(--red);color:var(--red);}
 
 /* PROGRESS */
 .progress-bar{height:4px;background:var(--border);border-radius:2px;margin:10px 0 6px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--red);border-radius:2px;transition:width 0.3s ease;}
-.progress-text{font-size:12px;color:var(--muted);text-align:right;margin-bottom:12px;}
+.progress-text{font-size:12px;color:var(--muted);text-align:right;margin-bottom:8px;}
 .progress-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
 .progress-pill{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:500;}
 .pill-ok{background:var(--success-light);color:var(--success);}
@@ -186,7 +223,6 @@ select:focus,input:focus{border-color:var(--red);}
 .helper-text{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5;}
 .empty-state{text-align:center;padding:32px 20px;color:var(--muted);}
 .empty-state .emoji{font-size:32px;margin-bottom:10px;}
-
 .loading-spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.4);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 </style>
@@ -219,6 +255,19 @@ select:focus,input:focus{border-color:var(--red);}
   </div>
 </div>
 
+<!-- MODAL NUEVA SESIÓN -->
+<div class="modal-overlay hidden" id="modalNuevaSesion">
+  <div class="modal-card">
+    <h3>📅 Ya cargaste esta cadena</h3>
+    <p id="modalMsg">Encontramos precios previos para esta cadena y categoría. ¿Qué querés hacer?</p>
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-primary" onclick="modalNuevaSesion()">🆕 Nueva fecha — empezar de cero</button>
+      <button class="modal-btn modal-btn-secondary" onclick="modalContinuarSesion()">✏️ Continuar editando la misma</button>
+      <button class="modal-btn modal-btn-ghost" onclick="cerrarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
 <!-- HEADER -->
 <div class="header">
   <div class="header-left">
@@ -226,7 +275,7 @@ select:focus,input:focus{border-color:var(--red);}
     <div class="header-user" id="headerUser">—</div>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
-    <button style="background:rgba(255,255,255,0.2);border:none;border-radius:20px;padding:5px 10px;color:white;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="editarPerfil()">✏️</button>
+    <button class="edit-btn" onclick="editarPerfil()">✏️</button>
     <button class="header-mode" id="modeBtn" onclick="toggleMode()">📊 Dashboard</button>
   </div>
 </div>
@@ -247,6 +296,10 @@ select:focus,input:focus{border-color:var(--red);}
 
     <div class="card">
       <div class="card-title">Contexto de la visita</div>
+      <div class="date-row">
+        <label>📅 Fecha</label>
+        <input type="date" id="fechaVisita">
+      </div>
       <div class="select-wrap">
         <select id="selectCadena" onchange="updateContext()">
           <option value="">Seleccioná la cadena...</option>
@@ -283,7 +336,7 @@ select:focus,input:focus{border-color:var(--red);}
 
       <div class="progress-pills" id="progressPills"></div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-      <div class="progress-text" id="progressText">0 de 0 productos cargados</div>
+      <div class="progress-text" id="progressText">0 de 0 productos relevados</div>
 
       <div id="priceRows"></div>
 
@@ -328,7 +381,7 @@ select:focus,input:focus{border-color:var(--red);}
   </div>
 
   <div id="dash-tabla" class="page" style="padding:14px">
-    <div class="filter-row" id="filterRow">
+    <div class="filter-row">
       <div class="filter-chip active" onclick="filterTabla('todas',this)">Todas</div>
       <div class="filter-chip" onclick="filterTabla('salsas',this)">Salsas</div>
       <div class="filter-chip" onclick="filterTabla('hummus',this)">Hummus</div>
@@ -349,11 +402,11 @@ select:focus,input:focus{border-color:var(--red);}
     <div class="card">
       <div class="card-title">Conexión Google Sheets</div>
       <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:6px">Web App URL</div>
-      <input type="text" id="configWebAppUrl" placeholder="https://script.google.com/macros/s/.../exec" oninput="guardarConfig()" style="font-size:13px;font-family:'DM Mono',monospace">
+      <input type="text" id="configWebAppUrl" style="font-size:13px;font-family:'DM Mono',monospace" oninput="guardarConfig()">
       <div class="divider"></div>
       <div class="config-item">
-        <div class="config-label"><strong>Google Sheets</strong><span id="sheetStatusText">No configurado</span></div>
-        <div id="sheetStatusBadge" style="font-size:12px;font-weight:500;color:var(--muted)">● Pendiente</div>
+        <div class="config-label"><strong>Google Sheets</strong><span id="sheetStatusText">Conectado ✓</span></div>
+        <div id="sheetStatusBadge" style="font-size:12px;font-weight:500;color:var(--success)">● Activo</div>
       </div>
       <button class="btn btn-primary" onclick="testConexion()">Probar conexión</button>
     </div>
@@ -363,6 +416,7 @@ select:focus,input:focus{border-color:var(--red);}
 <div class="toast" id="toast"></div>
 
 <script>
+const WEBAPP_URL='https://script.google.com/macros/s/AKfycbxE3uMExmpW3z4GJKUnaxwPEQrj6NEKReKd_OzRjGT9cEZ6Kj_Kk7RWW94idY6LHYKK/exec';
 const ZONAS=['CABA','Zona Norte Nuevo','GBA Norte'];
 const CADENAS=['JUMBO','COTO','CARREFOUR','CHANGO MAS','DISCO TORTUGAS','LIBERTAD'];
 const DINAMICAS=['Sin dinámica','2x1','Lleva 3 paga 2','% off 2da unidad','Combo','Precio especial tarjeta'];
@@ -463,24 +517,30 @@ const PRODUCTOS={
 let currentMode='app';
 let prices={};
 let extraRows=[];
+let expandedRow=null;
 let historial=JSON.parse(localStorage.getItem('ks_historial')||'[]');
-const WEBAPP_URL='https://script.google.com/macros/s/AKfycbxE3uMExmpW3z4GJKUnaxwPEQrj6NEKReKd_OzRjGT9cEZ6Kj_Kk7RWW94idY6LHYKK/exec';
 let config=JSON.parse(localStorage.getItem('ks_config')||'{}');
 config.webAppUrl=WEBAPP_URL;
 let allData=JSON.parse(localStorage.getItem('ks_data')||'[]');
 let perfil=JSON.parse(localStorage.getItem('ks_perfil')||'null');
-let lastSession=JSON.parse(localStorage.getItem('ks_last_session')||'null');
+let sessions=JSON.parse(localStorage.getItem('ks_sessions')||'{}'); // key=cadena||cat||fecha -> prices
+let pendingContext=null; // for modal
 
-// ---- ONBOARDING ----
+// ---- INIT ----
 function init(){
+  // Set today's date
+  const today=new Date().toISOString().split('T')[0];
+  document.getElementById('fechaVisita').value=today;
+
   if(perfil&&perfil.nombre&&perfil.zona){
     document.getElementById('onboardOverlay').classList.add('hidden');
     setTimeout(()=>{document.getElementById('onboardOverlay').style.display='none';},400);
     aplicarPerfil();
   }
-  document.getElementById('configWebAppUrl').value=config.webAppUrl||'';
+  document.getElementById('configWebAppUrl').value=WEBAPP_URL;
 }
 
+// ---- ONBOARDING ----
 function guardarOnboard(){
   const nombre=document.getElementById('onboardNombre').value.trim();
   const zona=document.getElementById('onboardZona').value;
@@ -544,10 +604,11 @@ function switchDash(dash){
   document.getElementById('dash-'+dash).classList.add('active');
 }
 
-// ---- CONTEXT & QUICK MODE ----
+// ---- CONTEXT ----
 function updateContext(){
   const cadena=document.getElementById('selectCadena').value;
   const categoria=document.getElementById('selectCategoria').value;
+  const fecha=document.getElementById('fechaVisita').value;
 
   if(!cadena||!categoria){
     document.getElementById('priceSection').style.display='none';
@@ -555,123 +616,203 @@ function updateContext(){
     return;
   }
 
+  const sessionKey=cadena+'||'+categoria+'||'+fecha;
+  const sessionKeyAny=cadena+'||'+categoria; // any date
+
+  // Check if there's a session for a DIFFERENT date
+  const existingKeys=Object.keys(sessions).filter(k=>k.startsWith(sessionKeyAny+'||'));
+  const sameDate=sessions[sessionKey];
+  const diffDate=existingKeys.find(k=>k!==sessionKey);
+
+  if(diffDate&&!sameDate){
+    // Session exists for different date — ask user
+    pendingContext={cadena,categoria,fecha,sessionKey,diffDateKey:diffDate};
+    const prevDate=diffDate.split('||')[2];
+    document.getElementById('modalMsg').textContent=`Ya hay precios cargados para ${cadena} / ${categoria} del ${formatDate(prevDate)}. ¿Qué querés hacer?`;
+    document.getElementById('modalNuevaSesion').classList.remove('hidden');
+    return;
+  }
+
+  loadContext(cadena,categoria,fecha,sessionKey,sameDate||null);
+}
+
+function loadContext(cadena,categoria,fecha,sessionKey,quickPrices){
   document.getElementById('priceSection').style.display='block';
   document.getElementById('emptyState').style.display='none';
   const catLabel=categoria==='salsas'?'Salsas Kansas':categoria==='hummus'?'Kyros Hummus':'Panificados';
   document.getElementById('priceSectionTitle').textContent=cadena+' · '+catLabel;
 
-  prices={};
+  prices=quickPrices?JSON.parse(JSON.stringify(quickPrices)):{};
+  expandedRow=null;
   document.getElementById('searchInput').value='';
   document.getElementById('searchCount').textContent='';
 
-  // Check quick mode
-  const sessionKey=cadena+'||'+categoria;
-  const quick=lastSession&&lastSession.key===sessionKey?lastSession.prices:null;
-
-  if(quick){
+  if(quickPrices&&Object.keys(quickPrices).length>0){
     document.getElementById('quickBanner').style.display='flex';
   } else {
     document.getElementById('quickBanner').style.display='none';
   }
 
-  buildPriceRows(categoria,quick);
+  buildPriceRows(categoria);
   renderExtraRows();
   updateProgress();
 }
 
-function buildPriceRows(categoria,quickPrices){
+// ---- MODAL ----
+function modalNuevaSesion(){
+  cerrarModal();
+  const {cadena,categoria,fecha,sessionKey}=pendingContext;
+  loadContext(cadena,categoria,fecha,sessionKey,null);
+}
+
+function modalContinuarSesion(){
+  cerrarModal();
+  const {cadena,categoria,fecha,diffDateKey}=pendingContext;
+  // Load previous session but keep current date
+  const prevPrices=sessions[diffDateKey];
+  const sessionKey=pendingContext.sessionKey;
+  loadContext(cadena,categoria,fecha,sessionKey,prevPrices);
+}
+
+function cerrarModal(){
+  document.getElementById('modalNuevaSesion').classList.add('hidden');
+  pendingContext=null;
+}
+
+function formatDate(str){
+  if(!str)return'';
+  const [y,m,d]=str.split('-');
+  return `${d}/${m}/${y}`;
+}
+
+// ---- BUILD ROWS ----
+function buildPriceRows(categoria){
   const container=document.getElementById('priceRows');
   container.innerHTML='';
   PRODUCTOS[categoria].forEach((p,i)=>{
-    const q=quickPrices&&quickPrices[i]?quickPrices[i]:null;
-    if(q) prices[i]=JSON.parse(JSON.stringify(q));
-
     const row=document.createElement('div');
     row.className='price-row';
-    row.dataset.marca=p.marca.toLowerCase();
-    row.dataset.producto=p.producto.toLowerCase();
-
-    const statusHtml=`
-      <div class="status-btns">
-        <button class="status-btn ${q&&q.status==='precio'?'active-precio':q?'':'active-precio'}" onclick="setStatus(${i},'precio',this)">💰 Precio</button>
-        <button class="status-btn ${q&&q.status==='oferta'?'active-oferta':''}" onclick="setStatus(${i},'oferta',this)">🏷️ Oferta</button>
-        <button class="status-btn ${q&&q.status==='absent'?'active-absent':''}" onclick="setStatus(${i},'absent',this)">👁️ No vi</button>
-        <button class="status-btn ${q&&q.status==='nostock'?'active-nostock':''}" onclick="setStatus(${i},'nostock',this)">📦 Sin stock</button>
-      </div>`;
-
-    const regVal=q&&q.regular?q.regular:'';
-    const offVal=q&&q.oferta?q.oferta:'';
-    const dinamicaIdx=q&&q.dinamica?DINAMICAS.indexOf(q.dinamica):0;
-
-    row.innerHTML=`
-      <div class="price-row-top">
-        <div class="price-brand">
-          ${p.kansas?'<span class="kansas-badge">Kansas</span> ':''}${p.marca}
-          <small>${p.producto}</small>
-        </div>
-      </div>
-      ${statusHtml}
-      <div id="priceContent_${i}">
-        <div class="price-inputs" id="priceInputs_${i}">
-          <div class="price-field">
-            <label>Precio regular</label>
-            <div class="price-input-wrap">
-              <input type="number" inputmode="decimal" step="0.01" min="0"
-                placeholder="0.00" id="reg_${i}" value="${regVal}"
-                oninput="onPriceChange(${i})" onfocus="this.select()">
-            </div>
-          </div>
-          <div class="price-field" id="ofertaField_${i}" style="display:none">
-            <label>Precio oferta</label>
-            <div class="price-input-wrap offer">
-              <input type="number" inputmode="decimal" step="0.01" min="0"
-                placeholder="0.00" id="off_${i}" value="${offVal}"
-                oninput="onPriceChange(${i})" onfocus="this.select()">
-            </div>
-          </div>
-          <div class="pct-badge" id="pct_${i}" style="display:none">—%</div>
-        </div>
-        <div class="chips-label">Dinámica de góndola</div>
-        <div class="chips" id="chips_${i}">
-          ${DINAMICAS.map((d,di)=>`<div class="chip ${di===(dinamicaIdx>=0?dinamicaIdx:0)?'selected':''}" onclick="selectChip(${i},${di},this)">${d}</div>`).join('')}
-        </div>
-      </div>
-      <div id="absentMsg_${i}" style="display:none" class="absent-row">👁️ No encontrado en góndola — se registrará como ausente</div>
-      <div id="nostockMsg_${i}" style="display:none" class="nostock-row">📦 Góndola vacía — sin stock disponible</div>
-    `;
+    row.id='row_'+i;
     container.appendChild(row);
-
-    // Restore status from quick
-    if(q&&q.status){
-      const btn=row.querySelector(`.status-btn.active-${q.status==='precio'?'precio':q.status==='oferta'?'oferta':q.status==='absent'?'absent':'nostock'}`);
-      if(btn) applyStatus(i,q.status);
-    } else {
-      applyStatus(i,'precio');
-    }
-
-    // Restore oferta display
-    if(q&&q.status==='oferta'&&q.oferta){
-      document.getElementById('ofertaField_'+i).style.display='block';
-      recalcPct(i);
-    }
+    renderRow(i,p,categoria);
   });
 }
 
-function setStatus(i,status,btn){
-  const row=btn.closest('.price-row');
-  row.querySelectorAll('.status-btn').forEach(b=>b.className='status-btn');
-  btn.classList.add('active-'+status);
-  applyStatus(i,status);
-  if(!prices[i])prices[i]={};
-  prices[i].status=status;
-  if(status==='absent'||status==='nostock'){
-    delete prices[i].regular;
-    delete prices[i].oferta;
+function renderRow(i,p,categoria){
+  categoria=categoria||document.getElementById('selectCategoria').value;
+  if(!p)p=PRODUCTOS[categoria][i];
+  const row=document.getElementById('row_'+i);
+  if(!row)return;
+
+  const data=prices[i];
+  const isExpanded=(expandedRow===i)||(!data);
+  const hasData=data&&(data.status==='absent'||data.status==='nostock'||data.regular);
+
+  if(hasData&&!isExpanded){
+    // COLLAPSED
+    let statusText='', statusClass='ok';
+    if(data.status==='absent'){statusText='👁️ No visto';statusClass='absent';}
+    else if(data.status==='nostock'){statusText='📦 Sin stock';statusClass='nostock';}
+    else if(data.status==='oferta'&&data.regular){statusText=`$${data.regular} 🏷️ $${data.oferta||'—'}`;statusClass='offer';}
+    else if(data.regular){statusText=`$${data.regular}`;statusClass='ok';}
+
+    row.innerHTML=`
+      <div class="price-row-collapsed" onclick="expandRow(${i})">
+        <div class="brand-name">
+          ${p.kansas?'<span class="kansas-badge" style="font-size:8px;padding:1px 4px;margin-right:4px">K</span>':''}${p.marca}
+          <small>${p.producto}</small>
+        </div>
+        <span class="collapse-status ${statusClass}">${statusText}</span>
+        <span class="collapse-chevron">✎</span>
+      </div>`;
+  } else {
+    // EXPANDED
+    const q=prices[i]||{};
+    const regVal=q.regular||'';
+    const offVal=q.oferta||'';
+    const status=q.status||'precio';
+    const dinamicaIdx=q.dinamica?DINAMICAS.indexOf(q.dinamica):0;
+    const showOffer=status==='oferta';
+    const showAbsent=status==='absent';
+    const showNostock=status==='nostock';
+
+    row.innerHTML=`
+      <div class="price-row-expanded">
+        <div class="price-row-top">
+          <div class="price-brand">
+            ${p.kansas?'<span class="kansas-badge">Kansas</span> ':''}${p.marca}
+            <small>${p.producto}</small>
+          </div>
+          ${hasData?`<button onclick="collapseRow(${i})" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0;line-height:1">✕</button>`:''}
+        </div>
+        <div class="status-btns">
+          <button class="status-btn ${status==='precio'?'active-precio':''}" onclick="setStatus(${i},'precio',this)">💰 Precio</button>
+          <button class="status-btn ${status==='oferta'?'active-oferta':''}" onclick="setStatus(${i},'oferta',this)">🏷️ Oferta</button>
+          <button class="status-btn ${status==='absent'?'active-absent':''}" onclick="setStatus(${i},'absent',this)">👁️ No vi</button>
+          <button class="status-btn ${status==='nostock'?'active-nostock':''}" onclick="setStatus(${i},'nostock',this)">📦 Sin stock</button>
+        </div>
+        <div id="priceContent_${i}" style="display:${showAbsent||showNostock?'none':'block'}">
+          <div class="price-inputs">
+            <div class="price-field">
+              <label>Precio regular</label>
+              <div class="price-input-wrap">
+                <input type="number" inputmode="decimal" step="0.01" min="0"
+                  placeholder="0.00" id="reg_${i}" value="${regVal}"
+                  oninput="onPriceChange(${i})" onfocus="this.select()">
+              </div>
+            </div>
+            <div class="price-field" id="ofertaField_${i}" style="display:${showOffer?'block':'none'}">
+              <label>Precio oferta</label>
+              <div class="price-input-wrap offer">
+                <input type="number" inputmode="decimal" step="0.01" min="0"
+                  placeholder="0.00" id="off_${i}" value="${offVal}"
+                  oninput="onPriceChange(${i})" onfocus="this.select()">
+              </div>
+            </div>
+            <div class="pct-badge" id="pct_${i}" style="display:${showOffer&&regVal&&offVal?'flex':'none'}">${regVal&&offVal?'-'+Math.round((1-offVal/regVal)*100)+'%':'—%'}</div>
+          </div>
+          <div class="chips-label">Dinámica de góndola</div>
+          <div class="chips" id="chips_${i}">
+            ${DINAMICAS.map((d,di)=>`<div class="chip ${di===(dinamicaIdx>=0?dinamicaIdx:0)?'selected':''}" onclick="selectChip(${i},${di},this)">${d}</div>`).join('')}
+          </div>
+        </div>
+        <div id="absentMsg_${i}" style="display:${showAbsent?'block':'none'}" class="absent-row">👁️ No encontrado en góndola — se registrará como ausente</div>
+        <div id="nostockMsg_${i}" style="display:${showNostock?'block':'none'}" class="nostock-row">📦 Góndola vacía — sin stock disponible</div>
+      </div>`;
   }
-  updateProgress();
+
+  // Apply search filter
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  if(q){
+    const match=p.marca.toLowerCase().includes(q)||p.producto.toLowerCase().includes(q);
+    row.style.display=match?'':'none';
+  }
 }
 
-function applyStatus(i,status){
+function expandRow(i){
+  expandedRow=i;
+  const categoria=document.getElementById('selectCategoria').value;
+  renderRow(i,null,categoria);
+  // Scroll to it
+  setTimeout(()=>{
+    const el=document.getElementById('row_'+i);
+    if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },50);
+}
+
+function collapseRow(i){
+  if(expandedRow===i)expandedRow=null;
+  const categoria=document.getElementById('selectCategoria').value;
+  renderRow(i,null,categoria);
+}
+
+function setStatus(i,status,btn){
+  const row=document.getElementById('row_'+i);
+  row.querySelectorAll('.status-btn').forEach(b=>b.className='status-btn');
+  btn.classList.add('active-'+status);
+  if(!prices[i])prices[i]={};
+  prices[i].status=status;
+
   const priceContent=document.getElementById('priceContent_'+i);
   const absentMsg=document.getElementById('absentMsg_'+i);
   const nostockMsg=document.getElementById('nostockMsg_'+i);
@@ -681,21 +822,16 @@ function applyStatus(i,status){
   absentMsg.style.display='none';
   nostockMsg.style.display='none';
 
-  if(status==='precio'){
-    priceContent.style.display='block';
-    if(ofertaField)ofertaField.style.display='none';
-  } else if(status==='oferta'){
-    priceContent.style.display='block';
-    if(ofertaField)ofertaField.style.display='block';
-  } else if(status==='absent'){
-    absentMsg.style.display='block';
-    if(!prices[i])prices[i]={};
-    prices[i].status='absent';
-  } else if(status==='nostock'){
-    nostockMsg.style.display='block';
-    if(!prices[i])prices[i]={};
-    prices[i].status='nostock';
+  if(status==='precio'){priceContent.style.display='block';if(ofertaField)ofertaField.style.display='none';}
+  else if(status==='oferta'){priceContent.style.display='block';if(ofertaField)ofertaField.style.display='block';}
+  else if(status==='absent'){absentMsg.style.display='block';}
+  else if(status==='nostock'){nostockMsg.style.display='block';}
+
+  // Auto-collapse after setting absent/nostock
+  if(status==='absent'||status==='nostock'){
+    setTimeout(()=>collapseRow(i),600);
   }
+  updateProgress();
 }
 
 function selectChip(i,di,el){
@@ -711,19 +847,61 @@ function onPriceChange(i){
   const off=offEl?parseFloat(offEl.value)||0:0;
   if(!prices[i])prices[i]={status:'precio'};
   if(reg>0)prices[i].regular=reg; else delete prices[i].regular;
-  if(off>0){prices[i].oferta=off;recalcPct(i);}
-  else{delete prices[i].oferta;document.getElementById('pct_'+i).style.display='none';}
+  if(off>0){
+    prices[i].oferta=off;
+    const pct=reg>0?Math.round((1-off/reg)*100):0;
+    const el=document.getElementById('pct_'+i);
+    if(el){el.style.display='flex';el.textContent='-'+pct+'%';}
+  } else {
+    delete prices[i].oferta;
+    const el=document.getElementById('pct_'+i);
+    if(el)el.style.display='none';
+  }
+  // Auto-collapse once price is entered and user moves away
   updateProgress();
 }
 
-function recalcPct(i){
-  const reg=prices[i]&&prices[i].regular?prices[i].regular:0;
-  const off=prices[i]&&prices[i].oferta?prices[i].oferta:0;
-  if(reg>0&&off>0){
-    const pct=Math.round((1-off/reg)*100);
-    const el=document.getElementById('pct_'+i);
-    el.style.display='flex';el.textContent='-'+pct+'%';
+// Auto-collapse when input loses focus and has value
+document.addEventListener('focusout',function(e){
+  if(e.target.matches('input[id^="reg_"],input[id^="off_"]')){
+    const match=e.target.id.match(/\d+/);
+    if(match){
+      const i=parseInt(match[0]);
+      const data=prices[i];
+      if(data&&data.regular&&expandedRow===i){
+        setTimeout(()=>{
+          // Only collapse if focus didn't go to another input in same row
+          const active=document.activeElement;
+          const sameRow=active&&active.closest('#row_'+i);
+          if(!sameRow)collapseRow(i);
+        },200);
+      }
+    }
   }
+},true);
+
+function filtrarProductos(){
+  const q=document.getElementById('searchInput').value.toLowerCase().trim();
+  const categoria=document.getElementById('selectCategoria').value;
+  if(!categoria)return;
+  let visible=0;
+  PRODUCTOS[categoria].forEach((p,i)=>{
+    const row=document.getElementById('row_'+i);
+    if(!row)return;
+    const match=!q||p.marca.toLowerCase().includes(q)||p.producto.toLowerCase().includes(q);
+    row.style.display=match?'':'none';
+    if(match)visible++;
+  });
+  document.getElementById('searchCount').textContent=q?`${visible} resultado${visible!==1?'s':''}` :'';
+}
+
+function limpiarRapido(){
+  const categoria=document.getElementById('selectCategoria').value;
+  prices={};
+  expandedRow=null;
+  buildPriceRows(categoria);
+  document.getElementById('quickBanner').style.display='none';
+  updateProgress();
 }
 
 function updateProgress(){
@@ -753,52 +931,85 @@ function updateProgress(){
   document.getElementById('progressPills').innerHTML=pills.join('');
 }
 
-// ---- SEARCH ----
-function filtrarProductos(){
-  const q=document.getElementById('searchInput').value.toLowerCase().trim();
-  const rows=document.querySelectorAll('#priceRows .price-row');
-  let visible=0;
-  rows.forEach(row=>{
-    const match=!q||row.dataset.marca.includes(q)||row.dataset.producto.includes(q);
-    row.classList.toggle('hidden-row',!match);
-    if(match)visible++;
-  });
-  document.getElementById('searchCount').textContent=q?`${visible} resultado${visible!==1?'s':''}` :'';
-}
-
-// ---- QUICK MODE ----
-function limpiarRapido(){
-  const categoria=document.getElementById('selectCategoria').value;
-  prices={};
-  buildPriceRows(categoria,null);
-  document.getElementById('quickBanner').style.display='none';
-  updateProgress();
-}
-
 // ---- EXTRA COMPETENCIA ----
 function renderExtraRows(){
   const c=document.getElementById('extraRows');
   c.innerHTML='';
   extraRows.forEach((r,i)=>{
     const div=document.createElement('div');
-    div.className='extra-row';
+    div.className='extra-item';
+
+    const status=r.status||'precio';
+    const showOffer=status==='oferta';
+
     div.innerHTML=`
-      <input type="text" placeholder="Marca" value="${r.marca||''}"
-        oninput="extraRows[${i}].marca=this.value" style="flex:1.5;font-size:13px;padding:9px 12px">
-      <div style="position:relative;flex:1">
-        <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none">$</span>
-        <input type="number" inputmode="decimal" placeholder="0.00" value="${r.precio||''}"
-          oninput="extraRows[${i}].precio=parseFloat(this.value)||0"
-          style="padding-left:22px;text-align:right;font-family:'DM Mono',monospace;font-size:13px;width:100%">
+      <div class="extra-item-header">
+        <div style="flex:1.2">
+          <div class="extra-input-label">Marca</div>
+          <input type="text" placeholder="Ej: HEINZ" value="${r.marca||''}"
+            oninput="extraRows[${i}].marca=this.value" style="padding:9px 12px;font-size:13px">
+        </div>
+        <div style="flex:1.2;margin-left:6px">
+          <div class="extra-input-label">Sabor / Variante</div>
+          <input type="text" placeholder="Ej: Ketchup 350g" value="${r.sabor||''}"
+            oninput="extraRows[${i}].sabor=this.value" style="padding:9px 12px;font-size:13px">
+        </div>
+        <button class="extra-remove" onclick="removeExtraRow(${i})">×</button>
       </div>
-      <button class="extra-remove" onclick="removeExtraRow(${i})">×</button>
+      <div class="status-btns">
+        <button class="status-btn ${status==='precio'?'active-precio':''}" onclick="setExtraStatus(${i},'precio',this)">💰 Precio</button>
+        <button class="status-btn ${status==='oferta'?'active-oferta':''}" onclick="setExtraStatus(${i},'oferta',this)">🏷️ Oferta</button>
+        <button class="status-btn ${status==='absent'?'active-absent':''}" onclick="setExtraStatus(${i},'absent',this)">👁️ No vi</button>
+        <button class="status-btn ${status==='nostock'?'active-nostock':''}" onclick="setExtraStatus(${i},'nostock',this)">📦 Sin stock</button>
+      </div>
+      <div id="extraContent_${i}" style="display:${status==='absent'||status==='nostock'?'none':'block'}">
+        <div class="price-inputs">
+          <div class="price-field">
+            <label>Precio regular</label>
+            <div class="price-input-wrap">
+              <input type="number" inputmode="decimal" step="0.01" min="0"
+                placeholder="0.00" value="${r.precio||''}"
+                oninput="extraRows[${i}].precio=parseFloat(this.value)||0"
+                onfocus="this.select()" style="font-family:'DM Mono',monospace">
+            </div>
+          </div>
+          <div class="price-field" id="extraOfertaField_${i}" style="display:${showOffer?'block':'none'}">
+            <label>Precio oferta</label>
+            <div class="price-input-wrap offer">
+              <input type="number" inputmode="decimal" step="0.01" min="0"
+                placeholder="0.00" value="${r.precioOferta||''}"
+                oninput="extraRows[${i}].precioOferta=parseFloat(this.value)||0"
+                onfocus="this.select()" style="font-family:'DM Mono',monospace">
+            </div>
+          </div>
+        </div>
+        <div class="chips-label">Dinámica de góndola</div>
+        <div class="chips">
+          ${DINAMICAS.map((d,di)=>`<div class="chip ${r.dinamica===d||(!r.dinamica&&di===0)?'selected':''}" onclick="setExtraDinamica(${i},'${d}',this)">${d}</div>`).join('')}
+        </div>
+      </div>
+      ${status==='absent'?`<div class="absent-row">👁️ No encontrado en góndola</div>`:''}
+      ${status==='nostock'?`<div class="nostock-row">📦 Góndola vacía — sin stock</div>`:''}
     `;
     c.appendChild(div);
   });
 }
 
+function setExtraStatus(i,status,btn){
+  extraRows[i].status=status;
+  btn.closest('.extra-item').querySelectorAll('.status-btn').forEach(b=>b.className='status-btn');
+  btn.classList.add('active-'+status);
+  renderExtraRows();
+}
+
+function setExtraDinamica(i,d,el){
+  extraRows[i].dinamica=d;
+  el.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
 function addExtraRow(){
-  extraRows.push({marca:'',precio:0});
+  extraRows.push({marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'});
   renderExtraRows();
 }
 
@@ -811,17 +1022,19 @@ function removeExtraRow(i){
 async function enviarDatos(){
   const cadena=document.getElementById('selectCadena').value;
   const categoria=document.getElementById('selectCategoria').value;
+  const fecha=document.getElementById('fechaVisita').value;
   if(!cadena||!categoria){showToast('Completá cadena y categoría','error');return;}
 
   const btn=document.getElementById('btnEnviar');
   btn.innerHTML='<span class="loading-spinner"></span>Guardando...';
   btn.disabled=true;
 
-  const timestamp=new Date().toISOString();
+  // Use selected date + current time
+  const fechaDate=new Date(fecha+'T12:00:00');
+  const timestamp=fechaDate.toISOString();
   const productos=PRODUCTOS[categoria];
   const rows=[];
 
-  // Productos listados
   Object.entries(prices).forEach(([idx,data])=>{
     if(!data)return;
     const p=productos[parseInt(idx)];
@@ -829,6 +1042,7 @@ async function enviarDatos(){
     const pct=data.regular&&data.oferta?Math.round((1-data.oferta/data.regular)*100):0;
     rows.push({
       timestamp,
+      fecha_visita:fecha,
       responsable:perfil?perfil.nombre:'Sin nombre',
       zona:perfil?perfil.zona:'—',
       cadena,
@@ -845,33 +1059,38 @@ async function enviarDatos(){
     });
   });
 
-  // Extra competencia
   extraRows.forEach(r=>{
-    if(!r.marca||!r.precio)return;
+    if(!r.marca)return;
+    const status=r.status||'precio';
     rows.push({
       timestamp,
+      fecha_visita:fecha,
       responsable:perfil?perfil.nombre:'Sin nombre',
       zona:perfil?perfil.zona:'—',
       cadena,
       categoria:categoria==='salsas'?'Salsas Kansas':categoria==='hummus'?'Kyros Hummus':'Panificados Kansas',
       marca:r.marca,
-      producto:'(sin especificar)',
-      precio_regular:r.precio,
-      en_oferta:'NO',precio_oferta:'',descuento_pct:'',
-      dinamica:'Sin dinámica',estado:'Disponible',es_kansas:'NO'
+      producto:r.sabor||'(sin especificar)',
+      precio_regular:r.precio||'',
+      en_oferta:status==='oferta'?'SI':'NO',
+      precio_oferta:r.precioOferta||'',
+      descuento_pct:'',
+      dinamica:r.dinamica||'Sin dinámica',
+      estado:status==='absent'?'No visto':status==='nostock'?'Sin stock':'Disponible',
+      es_kansas:'NO'
     });
   });
 
-  // Guardar localmente
+  // Save locally
   allData=[...allData,...rows];
   localStorage.setItem('ks_data',JSON.stringify(allData));
 
-  // Guardar sesión para modo rápido
-  const sessionKey=cadena+'||'+categoria;
-  lastSession={key:sessionKey,prices:JSON.parse(JSON.stringify(prices)),timestamp};
-  localStorage.setItem('ks_last_session',JSON.stringify(lastSession));
+  // Save session for this date
+  const sessionKey=cadena+'||'+categoria+'||'+fecha;
+  sessions[sessionKey]=JSON.parse(JSON.stringify(prices));
+  localStorage.setItem('ks_sessions',JSON.stringify(sessions));
 
-  // Enviar a Sheets
+  // Send to Sheets
   let enviado=false;
   if(config.webAppUrl){
     try{
@@ -882,7 +1101,7 @@ async function enviarDatos(){
 
   // Historial
   const entry={
-    id:Date.now(),timestamp,
+    id:Date.now(),timestamp,fecha_visita:fecha,
     responsable:perfil?perfil.nombre:'Sin nombre',
     zona:perfil?perfil.zona:'—',
     cadena,categoria,
@@ -906,7 +1125,8 @@ function limpiarFormulario(){
   if(!categoria)return;
   prices={};
   extraRows=[];
-  buildPriceRows(categoria,null);
+  expandedRow=null;
+  buildPriceRows(categoria);
   document.getElementById('quickBanner').style.display='none';
   renderExtraRows();
   updateProgress();
@@ -920,9 +1140,8 @@ function renderHistorial(){
     return;
   }
   c.innerHTML=historial.slice(0,20).map(e=>{
-    const d=new Date(e.timestamp);
-    const time=d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-    const sinc=e.sincronizado?`<span class="tag tag-absent" style="background:var(--success-light);color:var(--success)">✓</span>`:`<span class="tag" style="background:#FFF8E1;color:#8a6800">Local</span>`;
+    const time=e.fecha_visita?formatDate(e.fecha_visita):(new Date(e.timestamp).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}));
+    const sinc=e.sincronizado?`<span class="tag" style="background:var(--success-light);color:var(--success)">✓</span>`:`<span class="tag" style="background:#FFF8E1;color:#8a6800">Local</span>`;
     const badges=[];
     if(e.ofertas>0)badges.push(`<span class="tag tag-offer">🏷️${e.ofertas}</span>`);
     if(e.ausentes>0)badges.push(`<span class="tag tag-absent">👁️${e.ausentes}</span>`);
@@ -946,8 +1165,7 @@ function refreshDashboard(){
   document.getElementById('statOfertas').textContent=data.filter(d=>d.en_oferta==='SI').length;
   document.getElementById('statAusentes').textContent=data.filter(d=>d.estado&&d.estado!=='Disponible').length;
 
-  const zonaEl=document.getElementById('zonaStats');
-  zonaEl.innerHTML=ZONAS.map(z=>{
+  document.getElementById('zonaStats').innerHTML=ZONAS.map(z=>{
     const zd=data.filter(d=>d.zona===z);
     const of=zd.filter(d=>d.en_oferta==='SI').length;
     const aus=zd.filter(d=>d.estado&&d.estado!=='Disponible').length;
@@ -960,10 +1178,9 @@ function refreshDashboard(){
     </div>`;
   }).join('');
 
-  const cadEl=document.getElementById('cadenaStatus');
-  cadEl.innerHTML=CADENAS.map(c=>{
+  document.getElementById('cadenaStatus').innerHTML=CADENAS.map(c=>{
     const cd=data.filter(d=>d.cadena===c);
-    const last=cd.length?new Date(cd[cd.length-1].timestamp).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}):'—';
+    const last=cd.length?cd[cd.length-1].fecha_visita?formatDate(cd[cd.length-1].fecha_visita):new Date(cd[cd.length-1].timestamp).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}):'—';
     return `<div class="config-item">
       <span class="status-dot ${cd.length?'green':'gray'}"></span>
       <div class="config-label">
@@ -1007,7 +1224,7 @@ function renderDashTable(filter){
 }
 
 function filterTabla(cat,el){
-  document.querySelectorAll('#filterRow .filter-chip').forEach(c=>c.classList.remove('active'));
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
   el.classList.add('active');
   renderDashTable(cat);
 }
@@ -1019,8 +1236,8 @@ function guardarConfig(){
 }
 
 async function testConexion(){
-  const url=document.getElementById('configWebAppUrl').value;
-  if(!url){showToast('Ingresá la URL primero','error');return;}
+  const url=config.webAppUrl;
+  if(!url){showToast('Sin URL configurada','error');return;}
   showToast('Probando...','');
   try{
     await fetch(url+'?test=1',{mode:'no-cors'});
