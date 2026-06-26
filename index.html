@@ -296,6 +296,16 @@ select:focus,input:focus{border-color:var(--red);}
 
     <div class="card">
       <div class="card-title">Contexto de la visita</div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button id="btnCanal_gondola" onclick="setCanal('gondola')"
+          style="flex:1;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--red);background:var(--red);color:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">
+          🛒 Góndola física
+        </button>
+        <button id="btnCanal_ecommerce" onclick="setCanal('ecommerce')"
+          style="flex:1;padding:10px;border-radius:var(--radius-sm);border:2px solid var(--border);background:white;color:var(--mid);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer">
+          🌐 Ecommerce
+        </button>
+      </div>
       <div class="date-row">
         <label>📅 Fecha</label>
         <input type="date" id="fechaVisita">
@@ -416,7 +426,7 @@ select:focus,input:focus{border-color:var(--red);}
 <div class="toast" id="toast"></div>
 
 <script>
-const WEBAPP_URL='https://script.google.com/macros/s/AKfycbwK8xo2bUjubMXVRDtt_MkZ-OYtUG2GGKiWOlOartAKnt-7E5FXfLTJgGcAsNRfu_Zmbw/exec';
+const WEBAPP_URL='https://script.google.com/macros/s/AKfycbz_1JCBFjkZvipPKWo-PPUaU_5eKRNTIZpaWfqdUD-oyaBzHVtqVvqfKkFWi4o5WhSvHQ/exec';
 const ZONAS=['CABA','Zona Norte Nuevo','GBA Norte'];
 const CADENAS=['JUMBO','COTO','CARREFOUR','CHANGO MAS','DISCO TORTUGAS','LIBERTAD'];
 const DINAMICAS=['Sin dinámica','2x1','Lleva 3 paga 2','% off 2da unidad','Combo','Precio especial tarjeta'];
@@ -515,6 +525,7 @@ const PRODUCTOS={
 
 // STATE
 let currentMode='app';
+let canal='gondola'; // 'gondola' or 'ecommerce'
 let prices={};
 let extraRows=[];
 let expandedRow=null;
@@ -538,6 +549,20 @@ function init(){
     aplicarPerfil();
   }
   document.getElementById('configWebAppUrl').value=WEBAPP_URL;
+}
+
+// ---- CANAL ----
+function setCanal(c) {
+  canal = c;
+  const btnG = document.getElementById('btnCanal_gondola');
+  const btnE = document.getElementById('btnCanal_ecommerce');
+  if (c === 'gondola') {
+    btnG.style.background = 'var(--red)'; btnG.style.borderColor = 'var(--red)'; btnG.style.color = 'white';
+    btnE.style.background = 'white'; btnE.style.borderColor = 'var(--border)'; btnE.style.color = 'var(--mid)';
+  } else {
+    btnE.style.background = '#1565C0'; btnE.style.borderColor = '#1565C0'; btnE.style.color = 'white';
+    btnG.style.background = 'white'; btnG.style.borderColor = 'var(--border)'; btnG.style.color = 'var(--mid)';
+  }
 }
 
 // ---- ONBOARDING ----
@@ -1045,6 +1070,7 @@ async function enviarDatos(){
       fecha_visita:fecha,
       responsable:perfil?perfil.nombre:'Sin nombre',
       zona:perfil?perfil.zona:'—',
+      canal:canal,
       cadena,
       categoria:categoria==='salsas'?'Salsas Kansas':categoria==='hummus'?'Kyros Hummus':'Panificados Kansas',
       marca:p.marca,
@@ -1067,6 +1093,7 @@ async function enviarDatos(){
       fecha_visita:fecha,
       responsable:perfil?perfil.nombre:'Sin nombre',
       zona:perfil?perfil.zona:'—',
+      canal:canal,
       cadena,
       categoria:categoria==='salsas'?'Salsas Kansas':categoria==='hummus'?'Kyros Hummus':'Panificados Kansas',
       marca:r.marca,
