@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Kansas — Relevamiento de Precios</title>
+<title>Kansas — Relevamiento de Precios v4.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -669,6 +669,7 @@ function loadContext(cadena,categoria,fecha,sessionKey,quickPrices){
 
   prices=quickPrices?JSON.parse(JSON.stringify(quickPrices)):{};
   expandedRow=null;
+  extraRows=[]; // ← resetear siempre al cambiar contexto
   document.getElementById('searchInput').value='';
   document.getElementById('searchCount').textContent='';
 
@@ -1036,6 +1037,11 @@ function setExtraDinamica(i,d,el){
 function addExtraRow(){
   extraRows.push({marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'});
   renderExtraRows();
+  // Focus on the new marca input
+  setTimeout(()=>{
+    const inputs=document.querySelectorAll('#extraRows input[type="text"]');
+    if(inputs.length) inputs[inputs.length-2]?.focus();
+  },100);
 }
 
 function removeExtraRow(i){
@@ -1143,6 +1149,9 @@ async function enviarDatos(){
   localStorage.setItem('ks_historial',JSON.stringify(historial));
 
   btn.innerHTML='✓ Guardado';
+  // Limpiar competencia extra después de guardar
+  extraRows=[];
+  renderExtraRows();
   setTimeout(()=>{btn.innerHTML='Guardar en Google Sheets';btn.disabled=false;},2000);
   showToast(enviado?'✓ Guardado en Google Sheets':'✓ Guardado localmente','success');
 }
