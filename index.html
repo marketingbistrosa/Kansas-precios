@@ -641,22 +641,9 @@ function updateContext(){
   }
 
   const sessionKey=cadena+'||'+categoria+'||'+fecha;
-  const sessionKeyAny=cadena+'||'+categoria; // any date
-
-  // Check if there's a session for a DIFFERENT date
-  const existingKeys=Object.keys(sessions).filter(k=>k.startsWith(sessionKeyAny+'||'));
   const sameDate=sessions[sessionKey];
-  const diffDate=existingKeys.find(k=>k!==sessionKey);
 
-  if(diffDate&&!sameDate){
-    // Session exists for different date — ask user
-    pendingContext={cadena,categoria,fecha,sessionKey,diffDateKey:diffDate};
-    const prevDate=diffDate.split('||')[2];
-    document.getElementById('modalMsg').textContent=`Ya hay precios cargados para ${cadena} / ${categoria} del ${formatDate(prevDate)}. ¿Qué querés hacer?`;
-    document.getElementById('modalNuevaSesion').classList.remove('hidden');
-    return;
-  }
-
+  // Cargar siempre — si hay sesión de la misma fecha la precarga, si no empieza limpio
   loadContext(cadena,categoria,fecha,sessionKey,sameDate||null);
 }
 
