@@ -533,6 +533,8 @@ let config=JSON.parse(localStorage.getItem('ks_config')||'{}');
 config.webAppUrl=WEBAPP_URL;
 let allData=JSON.parse(localStorage.getItem('ks_data')||'[]');
 let perfil=JSON.parse(localStorage.getItem('ks_perfil')||'null');
+// Productos custom guardados por categoría: {salsas:[{marca,sabor},...], hummus:[...], panificados:[...]}
+let customProducts=JSON.parse(localStorage.getItem('ks_custom_products')||'{"salsas":[],"hummus":[],"panificados":[]}');
 let sessions=JSON.parse(localStorage.getItem('ks_sessions')||'{}'); // key=cadena||cat||fecha -> prices
 let pendingContext=null; // for modal
 
@@ -657,6 +659,16 @@ function loadContext(cadena,categoria,fecha,sessionKey,quickPrices){
   expandedRow=null;
   extraRows=[]; // ← resetear siempre al cambiar contexto
   extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'};
+
+  // Cargar productos custom guardados para esta categoría
+  const customs=customProducts[categoria]||[];
+  if(customs.length){
+    extraRows=customs.map(p=>({
+      marca:p.marca, sabor:p.sabor,
+      precio:0, precioOferta:0,
+      status:'precio', dinamica:'Sin dinámica'
+    }));
+  }
   document.getElementById('searchInput').value='';
   document.getElementById('searchCount').textContent='';
 
@@ -1050,10 +1062,21 @@ function confirmarExtraRow(){
     showToast('Ingresá al menos la marca','error'); return;
   }
   extraRows.push({...extraDraft});
+
+  // Guardar en customProducts para esta categoría
+  const categoria=document.getElementById('selectCategoria').value;
+  if(categoria && extraDraft.marca){
+    if(!customProducts[categoria]) customProducts[categoria]=[];
+    const exists=customProducts[categoria].find(p=>p.marca===extraDraft.marca&&p.sabor===extraDraft.sabor);
+    if(!exists){
+      customProducts[categoria].push({marca:extraDraft.marca, sabor:extraDraft.sabor});
+      localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
+    }
+  }
+
   // Reset draft
   extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'};
   renderExtraRows();
-  // Focus marca
   setTimeout(()=>{ const m=document.getElementById('draftMarca'); if(m)m.focus(); },100);
 }
 
@@ -1077,7 +1100,17 @@ function setExtraDinamica(i,d,el){
 function addExtraRow(){ confirmarExtraRow(); }
 
 function removeExtraRow(i){
+  const categoria=document.getElementById('selectCategoria').value;
+  const removed=extraRows[i];
   extraRows.splice(i,1);
+
+  // Borrar también de customProducts
+  if(categoria && removed && customProducts[categoria]){
+    customProducts[categoria]=customProducts[categoria].filter(
+      p=>!(p.marca===removed.marca&&p.sabor===removed.sabor)
+    );
+    localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
+  }
   renderExtraRows();
 }
 
