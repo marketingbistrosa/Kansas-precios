@@ -1175,7 +1175,7 @@ async function enviarDatos(){
       descuento_pct:'',
       dinamica:r.dinamica||'Sin dinámica',
       estado:status==='absent'?'No visto':status==='nostock'?'Sin stock':'Disponible',
-      es_kansas:'NO'
+      es_kansas:/^\s*(kansas|kyros)\s*$/i.test(r.marca||'')?'SI':'NO'
     });
   });
 
