@@ -428,6 +428,8 @@ select:focus,input:focus{border-color:var(--red);}
 const WEBAPP_URL='https://script.google.com/macros/s/AKfycbz_1JCBFjkZvipPKWo-PPUaU_5eKRNTIZpaWfqdUD-oyaBzHVtqVvqfKkFWi4o5WhSvHQ/exec';
 const ZONAS=['CABA','Zona Norte Nuevo','GBA Norte'];
 const CADENAS=['JUMBO','COTO','CARREFOUR','CHANGO MAS','DISCO TORTUGAS','LIBERTAD'];
+// Grupo/holding al que pertenece cada cadena — para filtrar marcas propias que se venden en varias cadenas del mismo grupo (ej: Cusine & Co es de Cencosud → Jumbo + Disco)
+const CADENA_GRUPO={'JUMBO':'Cencosud','DISCO TORTUGAS':'Cencosud','COTO':'Coto','CARREFOUR':'Carrefour','CHANGO MAS':'De Narváez','LIBERTAD':'Libertad','DIA':'DIA'};
 const DINAMICAS=['Sin dinámica','2x1','Lleva 3 paga 2','% off 2da unidad','Combo','Precio especial tarjeta'];
 
 const PRODUCTOS={
@@ -665,7 +667,7 @@ function loadContext(cadena,categoria,fecha,sessionKey,quickPrices){
   prices=quickPrices?JSON.parse(JSON.stringify(quickPrices)):{};
   expandedRow=null;
   extraRows=[]; // ya no se usa para renderizar — los productos custom se fusionan en la lista principal (ver getProductList)
-  extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'};
+  extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica',scope:''};
   document.getElementById('searchInput').value='';
   document.getElementById('searchCount').textContent='';
 
@@ -708,13 +710,20 @@ function formatDate(str){
 }
 
 // ---- BUILD ROWS ----
+function productoVisibleEnCadena(p,cadena){
+  if(!cadena)return true;
+  if(p.grupo)return CADENA_GRUPO[cadena]===p.grupo;
+  if(p.cadenas)return p.cadenas.includes(cadena);
+  return true;
+}
+
 function getProductByIndex(categoria,i){
   const base=PRODUCTOS[categoria];
   if(i<base.length)return base[i];
   const customs=customProducts[categoria]||[];
   const cp=customs[i-base.length];
   if(!cp)return null;
-  return {marca:cp.marca, producto:cp.sabor||'(sin especificar)', kansas:/^\s*(kansas|kyros)\s*$/i.test(cp.marca||''), custom:true};
+  return {marca:cp.marca, producto:cp.sabor||'(sin especificar)', kansas:/^\s*(kansas|kyros)\s*$/i.test(cp.marca||''), custom:true, cadenas:cp.cadenas, grupo:cp.grupo};
 }
 
 function getProductList(categoria,cadena){
@@ -723,11 +732,11 @@ function getProductList(categoria,cadena){
     _idx:PRODUCTOS[categoria].length+j,
     marca:p.marca, producto:p.sabor||'(sin especificar)',
     kansas:/^\s*(kansas|kyros)\s*$/i.test(p.marca||''),
-    custom:true
+    custom:true, cadenas:p.cadenas, grupo:p.grupo
   }));
   const all=base.concat(customs);
   if(!cadena)return all;
-  return all.filter(p=>!p.cadenas||p.cadenas.includes(cadena));
+  return all.filter(p=>productoVisibleEnCadena(p,cadena));
 }
 
 function buildPriceRows(categoria){
@@ -988,7 +997,7 @@ function updateProgress(){
 
 // ---- EXTRA COMPETENCIA ----
 // fila "borrador" siempre visible al final
-let extraDraft = {marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'};
+let extraDraft = {marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica',scope:''};
 
 function renderExtraRows(){
   const c=document.getElementById('extraRows');
@@ -1011,6 +1020,14 @@ function renderExtraRows(){
         <input type="text" placeholder="Ej: Ketchup 350g" id="draftSabor" value="${extraDraft.sabor||''}"
           oninput="extraDraft.sabor=this.value" style="padding:9px 12px;font-size:13px">
       </div>
+    </div>
+    <div style="margin-top:8px">
+      <div class="extra-input-label">Disponible en</div>
+      <select id="draftScope" onchange="extraDraft.scope=this.value" style="width:100%;padding:9px 12px;font-size:13px;border-radius:var(--radius-sm);border:1px solid var(--border)">
+        <option value="" ${!extraDraft.scope?'selected':''}>Todas las cadenas</option>
+        <option value="__cadena__" ${extraDraft.scope==='__cadena__'?'selected':''}>Solo esta cadena (${document.getElementById('selectCadena').value||'—'})</option>
+        ${[...new Set(Object.values(CADENA_GRUPO))].map(g=>`<option value="grupo:${g}" ${extraDraft.scope==='grupo:'+g?'selected':''}>Marca propia de ${g}</option>`).join('')}
+      </select>
     </div>
     <div class="status-btns">
       <button class="status-btn ${status==='precio'?'active-precio':''}" onclick="setDraftStatus('precio',this)">💰 Precio</button>
@@ -1078,14 +1095,21 @@ function confirmarExtraRow(){
 
   // Guardar en customProducts para esta categoría — pasa directo a la lista principal, no se queda aparte
   const categoria=document.getElementById('selectCategoria').value;
+  const cadenaActual=document.getElementById('selectCadena').value;
   if(categoria && extraDraft.marca){
     if(!customProducts[categoria]) customProducts[categoria]=[];
     let ci=customProducts[categoria].findIndex(p=>p.marca===extraDraft.marca&&p.sabor===extraDraft.sabor);
+    // Interpretar el alcance elegido: todas las cadenas, solo esta cadena, o marca propia de un grupo (ej: Cencosud = Jumbo+Disco)
+    let scopeFields={cadenas:undefined, grupo:undefined};
+    if(extraDraft.scope==='__cadena__'&&cadenaActual) scopeFields={cadenas:[cadenaActual], grupo:undefined};
+    else if(extraDraft.scope&&extraDraft.scope.indexOf('grupo:')===0) scopeFields={cadenas:undefined, grupo:extraDraft.scope.slice(6)};
     if(ci===-1){
-      customProducts[categoria].push({marca:extraDraft.marca, sabor:extraDraft.sabor});
-      localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
+      customProducts[categoria].push({marca:extraDraft.marca, sabor:extraDraft.sabor, ...scopeFields});
       ci=customProducts[categoria].length-1;
+    } else {
+      customProducts[categoria][ci]={...customProducts[categoria][ci], ...scopeFields};
     }
+    localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
     const idx=PRODUCTOS[categoria].length+ci;
     prices[idx]={regular:extraDraft.precio, oferta:extraDraft.precioOferta, status:extraDraft.status, dinamica:extraDraft.dinamica};
     expandedRow=null;
@@ -1095,7 +1119,7 @@ function confirmarExtraRow(){
   }
 
   // Reset draft
-  extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'};
+  extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica',scope:''};
   renderExtraRows();
   setTimeout(()=>{ const m=document.getElementById('draftMarca'); if(m)m.focus(); },100);
 }
@@ -1200,7 +1224,7 @@ async function enviarDatos(){
   btn.innerHTML='✓ Guardado';
   // Limpiar competencia extra después de guardar
   extraRows=[];
-  extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'};
+  extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica',scope:''};
   renderExtraRows();
   setTimeout(()=>{btn.innerHTML='Guardar en Google Sheets';btn.disabled=false;},2000);
   showToast(enviado?'✓ Guardado en Google Sheets':'✓ Guardado localmente','success');
