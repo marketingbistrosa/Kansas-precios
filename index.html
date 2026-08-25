@@ -314,7 +314,7 @@ select:focus,input:focus{border-color:var(--red);}
         <select id="selectCadena" onchange="updateContext()">
           <option value="">Seleccioná la cadena...</option>
           <option>JUMBO</option><option>COTO</option><option>CARREFOUR</option>
-          <option>CHANGO MAS</option><option>DISCO TORTUGAS</option><option>LIBERTAD</option>
+          <option>CHANGO MAS</option><option>DISCO TORTUGAS</option><option>LIBERTAD</option><option>DIA</option>
         </select>
       </div>
       <div class="select-wrap">
@@ -511,6 +511,7 @@ const PRODUCTOS={
     {marca:"KANSAS",producto:"PAN DE PANCHO",kansas:true},
     {marca:"KANSAS",producto:"PAN DE CAMPO",kansas:true},
     {marca:"BIMBO",producto:"Pan de Hamburguesa Artesano",kansas:false},
+    {marca:"BIMBO",producto:"Pan de Hamburguesa Clásico",kansas:false},
     {marca:"BIMBO",producto:"Pan de Hamburguesa Sésamo",kansas:false},
     {marca:"BIMBO",producto:"Pan de Pancho x6u",kansas:false},
     {marca:"FARGO",producto:"Pan de Hamburguesa Sésamo",kansas:false},
@@ -518,7 +519,13 @@ const PRODUCTOS={
     {marca:"LA PERLA",producto:"Pan de Hamburguesa Clásico",kansas:false},
     {marca:"LA PERLA",producto:"Pan de Pancho x6u",kansas:false},
     {marca:"LACTAL",producto:"Pan de Hamburguesa Clásico",kansas:false},
-    {marca:"LACTAL",producto:"Pan de Pancho x6u",kansas:false}
+    {marca:"LACTAL",producto:"Pan de Pancho x6u",kansas:false},
+    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Hamburguesa 240g",kansas:false},
+    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Pancho 210g",kansas:false},
+    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Campo (~500g aprox.)",kansas:false},
+    {marca:"ELABORACIÓN PROPIA COTO",producto:"Pan de Campo (x Kg)",kansas:false},
+    {marca:"ELABORACIÓN PROPIA COTO",producto:"Pan Artesanal de Campo (~500g aprox.)",kansas:false},
+    {marca:"PANNES",producto:"Pan de Papa con Queso 340g",kansas:false}
   ]
 };
 
