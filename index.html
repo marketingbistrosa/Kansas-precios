@@ -520,12 +520,12 @@ const PRODUCTOS={
     {marca:"LA PERLA",producto:"Pan de Pancho x6u",kansas:false},
     {marca:"LACTAL",producto:"Pan de Hamburguesa Clásico",kansas:false},
     {marca:"LACTAL",producto:"Pan de Pancho x6u",kansas:false},
-    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Hamburguesa 240g",kansas:false},
-    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Pancho 210g",kansas:false},
-    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Campo (~500g aprox.)",kansas:false},
-    {marca:"ELABORACIÓN PROPIA COTO",producto:"Pan de Campo (x Kg)",kansas:false},
-    {marca:"ELABORACIÓN PROPIA COTO",producto:"Pan Artesanal de Campo (~500g aprox.)",kansas:false},
-    {marca:"PANNES",producto:"Pan de Papa con Queso 340g",kansas:false}
+    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Hamburguesa 240g",kansas:false,cadenas:["JUMBO"]},
+    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Pancho 210g",kansas:false,cadenas:["JUMBO"]},
+    {marca:"ELABORACIÓN PROPIA JUMBO",producto:"Pan de Campo (~500g aprox.)",kansas:false,cadenas:["JUMBO"]},
+    {marca:"ELABORACIÓN PROPIA COTO",producto:"Pan de Campo (x Kg)",kansas:false,cadenas:["COTO"]},
+    {marca:"ELABORACIÓN PROPIA COTO",producto:"Pan Artesanal de Campo (~500g aprox.)",kansas:false,cadenas:["COTO"]},
+    {marca:"PANNES",producto:"Pan de Papa con Queso 340g",kansas:false,cadenas:["DIA"]}
   ]
 };
 
@@ -664,18 +664,8 @@ function loadContext(cadena,categoria,fecha,sessionKey,quickPrices){
 
   prices=quickPrices?JSON.parse(JSON.stringify(quickPrices)):{};
   expandedRow=null;
-  extraRows=[]; // ← resetear siempre al cambiar contexto
+  extraRows=[]; // ya no se usa para renderizar — los productos custom se fusionan en la lista principal (ver getProductList)
   extraDraft={marca:'',sabor:'',precio:0,precioOferta:0,status:'precio',dinamica:'Sin dinámica'};
-
-  // Cargar productos custom guardados para esta categoría
-  const customs=customProducts[categoria]||[];
-  if(customs.length){
-    extraRows=customs.map(p=>({
-      marca:p.marca, sabor:p.sabor,
-      precio:0, precioOferta:0,
-      status:'precio', dinamica:'Sin dinámica'
-    }));
-  }
   document.getElementById('searchInput').value='';
   document.getElementById('searchCount').textContent='';
 
@@ -718,10 +708,34 @@ function formatDate(str){
 }
 
 // ---- BUILD ROWS ----
+function getProductByIndex(categoria,i){
+  const base=PRODUCTOS[categoria];
+  if(i<base.length)return base[i];
+  const customs=customProducts[categoria]||[];
+  const cp=customs[i-base.length];
+  if(!cp)return null;
+  return {marca:cp.marca, producto:cp.sabor||'(sin especificar)', kansas:/^\s*(kansas|kyros)\s*$/i.test(cp.marca||''), custom:true};
+}
+
+function getProductList(categoria,cadena){
+  const base=PRODUCTOS[categoria].map((p,i)=>Object.assign({_idx:i},p));
+  const customs=(customProducts[categoria]||[]).map((p,j)=>({
+    _idx:PRODUCTOS[categoria].length+j,
+    marca:p.marca, producto:p.sabor||'(sin especificar)',
+    kansas:/^\s*(kansas|kyros)\s*$/i.test(p.marca||''),
+    custom:true
+  }));
+  const all=base.concat(customs);
+  if(!cadena)return all;
+  return all.filter(p=>!p.cadenas||p.cadenas.includes(cadena));
+}
+
 function buildPriceRows(categoria){
   const container=document.getElementById('priceRows');
   container.innerHTML='';
-  PRODUCTOS[categoria].forEach((p,i)=>{
+  const cadena=document.getElementById('selectCadena').value;
+  getProductList(categoria,cadena).forEach(p=>{
+    const i=p._idx;
     const row=document.createElement('div');
     row.className='price-row';
     row.id='row_'+i;
@@ -732,7 +746,8 @@ function buildPriceRows(categoria){
 
 function renderRow(i,p,categoria){
   categoria=categoria||document.getElementById('selectCategoria').value;
-  if(!p)p=PRODUCTOS[categoria][i];
+  if(!p)p=getProductByIndex(categoria,i);
+  if(!p)return;
   const row=document.getElementById('row_'+i);
   if(!row)return;
 
@@ -751,10 +766,11 @@ function renderRow(i,p,categoria){
     row.innerHTML=`
       <div class="price-row-collapsed" onclick="expandRow(${i})">
         <div class="brand-name">
-          ${p.kansas?'<span class="kansas-badge" style="font-size:8px;padding:1px 4px;margin-right:4px">K</span>':''}${p.marca}
+          ${p.kansas?'<span class="kansas-badge" style="font-size:8px;padding:1px 4px;margin-right:4px">K</span>':''}${p.custom?'<span class="kansas-badge" style="font-size:8px;padding:1px 4px;margin-right:4px;background:var(--success)">+</span>':''}${p.marca}
           <small>${p.producto}</small>
         </div>
         <span class="collapse-status ${statusClass}">${statusText}</span>
+        ${p.custom?`<button onclick="event.stopPropagation();removeCustomProduct('${categoria}',${i})" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:0 4px">×</button>`:''}
         <span class="collapse-chevron">✎</span>
       </div>`;
   } else {
@@ -772,10 +788,13 @@ function renderRow(i,p,categoria){
       <div class="price-row-expanded">
         <div class="price-row-top">
           <div class="price-brand">
-            ${p.kansas?'<span class="kansas-badge">Kansas</span> ':''}${p.marca}
+            ${p.kansas?'<span class="kansas-badge">Kansas</span> ':''}${p.custom?'<span class="kansas-badge" style="background:var(--success)">Agregado</span> ':''}${p.marca}
             <small>${p.producto}</small>
           </div>
-          ${hasData?`<button onclick="collapseRow(${i})" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0;line-height:1">✕</button>`:''}
+          <div style="display:flex;gap:6px;align-items:center">
+            ${p.custom?`<button onclick="removeCustomProduct('${categoria}',${i})" style="background:none;border:none;color:var(--red);font-size:12px;cursor:pointer;padding:2px 6px;border:1px solid var(--border);border-radius:4px">🗑 Quitar</button>`:''}
+            ${hasData?`<button onclick="collapseRow(${i})" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0;line-height:1">✕</button>`:''}
+          </div>
         </div>
         <div class="status-btns">
           <button class="status-btn ${status==='precio'?'active-precio':''}" onclick="setStatus(${i},'precio',this)">💰 Precio</button>
@@ -916,8 +935,10 @@ function filtrarProductos(){
   const q=document.getElementById('searchInput').value.toLowerCase().trim();
   const categoria=document.getElementById('selectCategoria').value;
   if(!categoria)return;
+  const cadena=document.getElementById('selectCadena').value;
   let visible=0;
-  PRODUCTOS[categoria].forEach((p,i)=>{
+  getProductList(categoria,cadena).forEach(p=>{
+    const i=p._idx;
     const row=document.getElementById('row_'+i);
     if(!row)return;
     const match=!q||p.marca.toLowerCase().includes(q)||p.producto.toLowerCase().includes(q);
@@ -939,10 +960,12 @@ function limpiarRapido(){
 function updateProgress(){
   const categoria=document.getElementById('selectCategoria').value;
   if(!categoria)return;
-  const total=PRODUCTOS[categoria].length;
+  const cadena=document.getElementById('selectCadena').value;
+  const listaVisible=getProductList(categoria,cadena);
+  const total=listaVisible.length;
   let ok=0,oferta=0,absent=0,nostock=0;
-  PRODUCTOS[categoria].forEach((_,i)=>{
-    const p=prices[i];
+  listaVisible.forEach(item=>{
+    const p=prices[item._idx];
     if(!p)return;
     if(p.status==='absent'){absent++;ok++;}
     else if(p.status==='nostock'){nostock++;ok++;}
@@ -971,23 +994,7 @@ function renderExtraRows(){
   const c=document.getElementById('extraRows');
   c.innerHTML='';
 
-  // Filas ya confirmadas — colapsadas con ✓
-  extraRows.forEach((r,i)=>{
-    const div=document.createElement('div');
-    div.style.cssText='display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--success-light);border:1px solid #A8D5B5;border-radius:var(--radius-sm);margin-bottom:6px';
-    const statusIcon = r.status==='absent'?'👁️':r.status==='nostock'?'📦':'💰';
-    const priceText = r.status==='absent'?'No visto':r.status==='nostock'?'Sin stock':`$${r.precio||0}`;
-    div.innerHTML=`
-      <span style="font-size:14px">✓</span>
-      <div style="flex:1;font-size:13px;font-weight:500">${r.marca||'—'} <span style="font-weight:400;color:var(--muted)">${r.sabor||''}</span></div>
-      <div style="font-size:13px;font-weight:600;color:var(--success)">${statusIcon} ${priceText}</div>
-      <button onclick="editExtraRow(${i})" style="background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:2px 6px;border-radius:4px;border:1px solid var(--border)">✎</button>
-      <button onclick="removeExtraRow(${i})" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1">×</button>
-    `;
-    c.appendChild(div);
-  });
-
-  // Fila borrador — siempre visible
+  // Fila borrador — siempre visible (al confirmar, el producto pasa directo a la lista principal de arriba)
   const draft=document.createElement('div');
   draft.className='extra-item';
   const status=extraDraft.status||'precio';
@@ -1068,17 +1075,23 @@ function confirmarExtraRow(){
   if(!extraDraft.marca && extraDraft.status==='precio'){
     showToast('Ingresá al menos la marca','error'); return;
   }
-  extraRows.push({...extraDraft});
 
-  // Guardar en customProducts para esta categoría
+  // Guardar en customProducts para esta categoría — pasa directo a la lista principal, no se queda aparte
   const categoria=document.getElementById('selectCategoria').value;
   if(categoria && extraDraft.marca){
     if(!customProducts[categoria]) customProducts[categoria]=[];
-    const exists=customProducts[categoria].find(p=>p.marca===extraDraft.marca&&p.sabor===extraDraft.sabor);
-    if(!exists){
+    let ci=customProducts[categoria].findIndex(p=>p.marca===extraDraft.marca&&p.sabor===extraDraft.sabor);
+    if(ci===-1){
       customProducts[categoria].push({marca:extraDraft.marca, sabor:extraDraft.sabor});
       localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
+      ci=customProducts[categoria].length-1;
     }
+    const idx=PRODUCTOS[categoria].length+ci;
+    prices[idx]={regular:extraDraft.precio, oferta:extraDraft.precioOferta, status:extraDraft.status, dinamica:extraDraft.dinamica};
+    expandedRow=null;
+    buildPriceRows(categoria);
+    updateProgress();
+    showToast('✓ Agregado a la lista principal','success');
   }
 
   // Reset draft
@@ -1087,38 +1100,25 @@ function confirmarExtraRow(){
   setTimeout(()=>{ const m=document.getElementById('draftMarca'); if(m)m.focus(); },100);
 }
 
-function editExtraRow(i){
-  extraDraft={...extraRows[i]};
-  extraRows.splice(i,1);
-  renderExtraRows();
-}
-
-function setExtraStatus(i,status,btn){
-  extraRows[i].status=status;
-  renderExtraRows();
-}
-
-function setExtraDinamica(i,d,el){
-  extraRows[i].dinamica=d;
-  el.closest('.chips').querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-}
-
 function addExtraRow(){ confirmarExtraRow(); }
 
-function removeExtraRow(i){
-  const categoria=document.getElementById('selectCategoria').value;
-  const removed=extraRows[i];
-  extraRows.splice(i,1);
-
-  // Borrar también de customProducts
-  if(categoria && removed && customProducts[categoria]){
-    customProducts[categoria]=customProducts[categoria].filter(
-      p=>!(p.marca===removed.marca&&p.sabor===removed.sabor)
-    );
-    localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
-  }
-  renderExtraRows();
+function removeCustomProduct(categoria,i){
+  const baseLen=PRODUCTOS[categoria].length;
+  const ci=i-baseLen;
+  if(ci<0||!customProducts[categoria]||!customProducts[categoria][ci])return;
+  if(!confirm('¿Quitar este producto de la lista?'))return;
+  customProducts[categoria].splice(ci,1);
+  localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
+  const oldPrices=prices;
+  prices={};
+  Object.keys(oldPrices).forEach(k=>{
+    const n=parseInt(k);
+    if(n===i)return;
+    prices[n>i?n-1:n]=oldPrices[k];
+  });
+  expandedRow=null;
+  buildPriceRows(categoria);
+  updateProgress();
 }
 
 // ---- ENVIAR ----
@@ -1135,12 +1135,12 @@ async function enviarDatos(){
   // Use selected date + current time
   const fechaDate=new Date(fecha+'T12:00:00');
   const timestamp=fechaDate.toISOString();
-  const productos=PRODUCTOS[categoria];
   const rows=[];
 
   Object.entries(prices).forEach(([idx,data])=>{
     if(!data)return;
-    const p=productos[parseInt(idx)];
+    const p=getProductByIndex(categoria,parseInt(idx));
+    if(!p)return;
     const status=data.status||'precio';
     const pct=data.regular&&data.oferta?Math.round((1-data.oferta/data.regular)*100):0;
     rows.push({
@@ -1160,29 +1160,6 @@ async function enviarDatos(){
       dinamica:data.dinamica||'Sin dinámica',
       estado:status==='absent'?'No visto':status==='nostock'?'Sin stock':'Disponible',
       es_kansas:p.kansas?'SI':'NO'
-    });
-  });
-
-  extraRows.forEach(r=>{
-    if(!r.marca)return;
-    const status=r.status||'precio';
-    rows.push({
-      timestamp,
-      fecha_visita:fecha,
-      responsable:perfil?perfil.nombre:'Sin nombre',
-      zona:perfil?perfil.zona:'—',
-      canal:canal,
-      cadena,
-      categoria:categoria==='salsas'?'Salsas Kansas':categoria==='hummus'?'Kyros Hummus':'Panificados Kansas',
-      marca:r.marca,
-      producto:r.sabor||'(sin especificar)',
-      precio_regular:r.precio||'',
-      en_oferta:status==='oferta'?'SI':'NO',
-      precio_oferta:r.precioOferta||'',
-      descuento_pct:'',
-      dinamica:r.dinamica||'Sin dinámica',
-      estado:status==='absent'?'No visto':status==='nostock'?'Sin stock':'Disponible',
-      es_kansas:/^\s*(kansas|kyros)\s*$/i.test(r.marca||'')?'SI':'NO'
     });
   });
 
