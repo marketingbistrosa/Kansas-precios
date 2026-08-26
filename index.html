@@ -547,6 +547,51 @@ let customProducts=JSON.parse(localStorage.getItem('ks_custom_products')||'{"sal
 let sessions=JSON.parse(localStorage.getItem('ks_sessions')||'{}'); // key=cadena||cat||fecha -> prices
 let pendingContext=null; // for modal
 
+// ---- SYNC PRODUCTOS CUSTOM (compartido entre dispositivos) ----
+async function syncCustomProducts(){
+  if(!config.webAppUrl) return;
+  try{
+    const res=await fetch(config.webAppUrl+'?action=customProducts&v='+Date.now());
+    const json=await res.json();
+    if(json.status!=='ok'||!json.customProducts) return;
+    const cloud=json.customProducts;
+    let changed=false;
+    ['salsas','hummus','panificados'].forEach(cat=>{
+      const cloudList=cloud[cat]||[];
+      const localList=customProducts[cat]||[];
+      const cloudKeys=new Set(cloudList.map(p=>p.marca+'||'+(p.sabor||'')));
+      const localOnly=localList.filter(p=>!cloudKeys.has(p.marca+'||'+(p.sabor||'')));
+      localOnly.forEach(p=>upsertCustomProductRemote(cat,p));
+      customProducts[cat]=cloudList.concat(localOnly);
+      changed=true;
+    });
+    if(changed){
+      localStorage.setItem('ks_custom_products',JSON.stringify(customProducts));
+      const catSel=document.getElementById('selectCategoria');
+      const categoria=catSel&&catSel.value;
+      const priceSection=document.getElementById('priceSection');
+      if(categoria&&priceSection&&priceSection.style.display!=='none'){
+        buildPriceRows(categoria);
+        renderExtraRows();
+      }
+    }
+  }catch(e){console.error('Error sincronizando productos custom:',e);}
+}
+
+function upsertCustomProductRemote(categoria,p){
+  if(!config.webAppUrl) return;
+  fetch(config.webAppUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'upsertCustomProduct',categoria,marca:p.marca,sabor:p.sabor,cadenas:p.cadenas,grupo:p.grupo,responsable:perfil?perfil.nombre:''})
+  }).catch(e=>console.error('Error guardando producto custom:',e));
+}
+
+function deleteCustomProductRemote(categoria,p){
+  if(!config.webAppUrl) return;
+  fetch(config.webAppUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({action:'deleteCustomProduct',categoria,marca:p.marca,sabor:p.sabor})
+  }).catch(e=>console.error('Error borrando producto custom:',e));
+}
+
 // ---- INIT ----
 function init(){
   // Set today's date
@@ -559,6 +604,7 @@ function init(){
     aplicarPerfil();
   }
   document.getElementById('configWebAppUrl').value=WEBAPP_URL;
+  syncCustomProducts();
 }
 
 // ---- CANAL ----
@@ -650,6 +696,8 @@ function updateContext(){
     document.getElementById('emptyState').style.display='block';
     return;
   }
+
+  syncCustomProducts();
 
   const sessionKey=cadena+'||'+categoria+'||'+fecha;
   const sameDate=sessions[sessionKey];
@@ -1110,6 +1158,7 @@ function confirmarExtraRow(){
       customProducts[categoria][ci]={...customProducts[categoria][ci], ...scopeFields};
     }
     localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
+    upsertCustomProductRemote(categoria, customProducts[categoria][ci]);
     const idx=PRODUCTOS[categoria].length+ci;
     prices[idx]={regular:extraDraft.precio, oferta:extraDraft.precioOferta, status:extraDraft.status, dinamica:extraDraft.dinamica};
     expandedRow=null;
@@ -1131,7 +1180,9 @@ function removeCustomProduct(categoria,i){
   const ci=i-baseLen;
   if(ci<0||!customProducts[categoria]||!customProducts[categoria][ci])return;
   if(!confirm('¿Quitar este producto de la lista?'))return;
+  const removedProduct=customProducts[categoria][ci];
   customProducts[categoria].splice(ci,1);
+  deleteCustomProductRemote(categoria, removedProduct);
   localStorage.setItem('ks_custom_products', JSON.stringify(customProducts));
   const oldPrices=prices;
   prices={};
